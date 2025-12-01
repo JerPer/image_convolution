@@ -2,18 +2,31 @@ import numpy as np
 import matplotlib.pyplot as plt
 from PIL import Image
 
-mtx = np.empty(shape=(3, 3, 3),dtype=float)
-mtx[:,:] = 1/3
+#mtx = np.empty(shape=(3, 3),dtype=float)
+#mtx[:,:] = 1/9
+mtx = np.array([[1/16, 1/8, 1/16], [1/8, 1/4, 1/8], [1/16, 1/8, 1/16]])
 
 img_object = Image.open("picture.png")
 
 img = np.array(img_object)
 
-print(np.shape(img))
-plt.imshow(img)
-plt.show()
+#weights = np.array([0.2126, 0.7152, 0.0722])
+#img_gs = np.array((img[:,:,0]*weights[0] + img[:,:,1]*weights[1] + img[:,:,2]*weights[2]))
 
-img_gs = np.array((img[:,:,0] + img[:,:,1] + img[:,:,2])/3)
+img_pad = np.pad(img, pad_width=((1, 1),), mode='edge')[:,:,1:5]
 
-plt.imshow(img_gs,cmap='gray',vmin=0, vmax=1)
+img_conv = np.empty(shape=(100,100,4))
+for i in range(1,101):
+    for j in range(1,101):
+        img_conv[i-1, j-1, 0] = np.sum(img_pad[i-1:i+2, j-1:j+2, 0]*mtx)
+        img_conv[i-1, j-1, 1] = np.sum(img_pad[i-1:i+2, j-1:j+2, 1]*mtx)
+        img_conv[i-1, j-1, 2] = np.sum(img_pad[i-1:i+2, j-1:j+2, 2]*mtx)
+
+img_conv[:,:,3] = 255
+
+fig, axs = plt.subplots(1, 2, figsize = (10, 5))
+axs[0].imshow(img_pad/255)
+axs[0].axis('off')
+axs[1].imshow(img_conv/255)
+axs[1].axis('off')
 plt.show()
