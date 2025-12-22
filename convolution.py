@@ -2,16 +2,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 from PIL import Image
 
-#mtx = np.empty(shape=(3, 3),dtype=float)
-#mtx[:,:] = 1/9
 mtx = np.array([[1/16, 1/8, 1/16], [1/8, 1/4, 1/8], [1/16, 1/8, 1/16]])
 
 img_object = Image.open("picture.png")
 
 img = np.array(img_object)
-
-#weights = np.array([0.2126, 0.7152, 0.0722])
-#img_gs = np.array((img[:,:,0]*weights[0] + img[:,:,1]*weights[1] + img[:,:,2]*weights[2]))
 
 img_pad = np.pad(img, pad_width=((1, 1),), mode='edge')[:,:,1:5]
 
